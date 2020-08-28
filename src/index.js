@@ -13,6 +13,7 @@ const {
   getUser,
   getUsersInRoom,
 } = require("./utils/users");
+const { addRoom, removeRoom, getAllRooms } = require("../src/utils/rooms");
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,8 @@ io.on("connection", (socket) => {
       return callback(error);
     }
 
+    addRoom(user.room);
+
     socket.join(user.room);
 
     socket.emit("message", generateMessage("Admin", "Welcome"));
@@ -48,6 +51,10 @@ io.on("connection", (socket) => {
     });
 
     callback();
+  });
+
+  socket.on("roomsListQuery", () => {
+    socket.emit("roomsList", getAllRooms());
   });
 
   socket.on("sendMessage", (message, callback) => {
@@ -83,6 +90,9 @@ io.on("connection", (socket) => {
         "message",
         generateMessage("Admin", `${user.username} has left!`)
       );
+
+      removeRoom(user.room);
+
       io.to(user.room).emit("roomData", {
         room: user.room,
         users: getUsersInRoom(user.room),

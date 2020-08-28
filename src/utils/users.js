@@ -45,10 +45,15 @@ const getUser = (id) => {
   return users.find((user) => user.id === id);
 };
 
+// getAllUsers
+const getUsers = () => {
+  return users;
+};
+
 // getUsersInRoom
 const getUsersInRoom = (room) => {
   room = room.trim().toLowerCase();
   return users.filter((user) => user.room === room);
 };
 
-module.exports = { addUser, removeUser, getUser, getUsersInRoom };
+module.exports = { addUser, removeUser, getUser, getUsers, getUsersInRoom };
